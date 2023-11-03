@@ -104,7 +104,14 @@ fn get_last_epoch() -> Result<(Option<u64>, Option<String>), Box<dyn Error>> {
 }
 
 fn epoch_to_utc_date_and_last_line(epoch: u64) -> Result<(String, Option<String>), Box<dyn Error>> {
-    let datetime = Utc.timestamp(epoch as i64, 0);
-    let normal_date = datetime.format("%Y-%m-%d %H:%M:%S").to_string();
-    Ok((normal_date, None))
+    match Utc.timestamp_opt(epoch as i64, 0).earliest() {
+        Some(datetime) => {
+            let normal_date = datetime.format("%Y-%m-%d %H:%M:%S").to_string();
+            Ok((normal_date, None))
+        }
+        None => {
+            // Handle the case when the conversion fails.
+            Ok(("Conversion failed".to_string(), None))
+        }
+    }
 }
