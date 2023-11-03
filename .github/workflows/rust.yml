@@ -1,5 +1,6 @@
 name: Rust
-
+name: Install xmllint
+  run: sudo apt-get install -y libpango1.0-dev
 on:
   push:
     branches: [ "main" ]
